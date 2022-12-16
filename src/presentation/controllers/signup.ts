@@ -1,5 +1,5 @@
 import { MissingParamError } from '../errors/missing-param-error'
-import { badRequest } from '../helpes/http-helper'
+import { badRequest } from '../helpers/http-helper'
 import { Controller } from '../protocols/controller'
 import { HttpRequest } from '../protocols/http'
 
