@@ -8,7 +8,7 @@ interface SutTypes {
 }
 
 const makeEmailValidator = (): EmailValidator => {
-  class EmailValidatorStub {
+  class EmailValidatorStub implements EmailValidator {
     isValid (email: string): boolean {
       return true
     }
@@ -18,7 +18,7 @@ const makeEmailValidator = (): EmailValidator => {
 }
 
 const makeEmailValidatorWithError = (): EmailValidator => {
-  class EmailValidatorStub {
+  class EmailValidatorStub implements EmailValidator {
     isValid (email: string): boolean {
       throw new Error()
     }
