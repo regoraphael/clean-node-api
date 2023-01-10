@@ -25,4 +25,8 @@ export class MongoHelper {
   getCollection (name: string): Collection {
     return this.client.db().collection(name)
   }
+
+  map ({ _id, ...rest }: any): any {
+    return { id: _id, ...rest }
+  }
 }
