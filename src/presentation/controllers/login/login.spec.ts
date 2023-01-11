@@ -1,11 +1,13 @@
-import { InvalidParamError, MissingParamError } from '../../errors'
-import { badRequest, serverError } from '../../helpers/http-helper'
-import { EmailValidator } from '../../protocols'
 import { LoginController } from './login'
+import { EmailValidator } from '../../protocols'
+import { badRequest, serverError } from '../../helpers/http-helper'
+import { InvalidParamError, MissingParamError } from '../../errors'
+import { Authentication } from '../../../domain/usecases/authentication'
 
 interface SutTypes {
   sut: LoginController
   emailValidatorStub: EmailValidator
+  authenticationStub: Authentication
 }
 
 const makeEmailValidatorStub = (): EmailValidator => {
@@ -18,11 +20,22 @@ const makeEmailValidatorStub = (): EmailValidator => {
   return new EmailValidatorStub()
 }
 
+const makeAuthenticationStub = (): Authentication => {
+  class AuthenticationStub implements Authentication {
+    async auth (email: string, password: string): Promise<string> {
+      return 'access_token'
+    }
+  }
+
+  return new AuthenticationStub()
+}
+
 const makeSut = (): SutTypes => {
   const emailValidatorStub = makeEmailValidatorStub()
-  const sut = new LoginController(emailValidatorStub)
+  const authenticationStub = makeAuthenticationStub()
+  const sut = new LoginController(emailValidatorStub, authenticationStub)
 
-  return { sut, emailValidatorStub }
+  return { sut, emailValidatorStub, authenticationStub }
 }
 
 describe('Login Controller', () => {
@@ -82,5 +95,17 @@ describe('Login Controller', () => {
     const httpResponse = await sut.handle(httpRequest)
 
     expect(httpResponse).toEqual(serverError(fakeError))
+  })
+
+  test('Should call Authentication with correct values', async () => {
+    const { sut, authenticationStub } = makeSut()
+
+    const authSpy = jest.spyOn(authenticationStub, 'auth')
+
+    const httpRequest = { body: { email: 'valid_mail@mail.com', password: 'valid_password' } }
+
+    await sut.handle(httpRequest)
+
+    expect(authSpy).toHaveBeenCalledWith(httpRequest.body.email, httpRequest.body.password)
   })
 })
