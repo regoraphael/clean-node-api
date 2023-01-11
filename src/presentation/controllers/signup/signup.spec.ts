@@ -12,6 +12,7 @@ import {
   AddAccountModel,
   HttpRequest
 } from './signup-protocols'
+import { badRequest } from '../../helpers/http-helper'
 
 interface SutTypes {
   sut: SignUpController
@@ -244,6 +245,20 @@ describe('SignUp Controller', () => {
     await sut.handle(httpRequest)
 
     expect(validateSpy).toHaveBeenCalledWith(httpRequest.body)
+  })
+
+  test('Should return 400 if validation returns an error', async () => {
+    const { sut, validationStub } = makeSut()
+
+    const fakeError = new MissingParamError('any_field')
+
+    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(fakeError)
+
+    const httpRequest = makeHttpRequest()
+
+    const httpResponse = await sut.handle(httpRequest)
+
+    expect(httpResponse).toEqual(badRequest(fakeError))
   })
 
   test('Should return 200 if correct data is provided', async () => {
