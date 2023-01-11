@@ -27,7 +27,7 @@ const makeSut = (): SutTypes => {
 }
 
 describe('RequiredField Validation', () => {
-  test('Should return an error if some validation fails', () => {
+  test('Should return an error if some validation returns an error', () => {
     const { sut, requiredFieldValidationStub } = makeSut()
 
     const fakeError = new MissingParamError('email')
@@ -41,5 +41,17 @@ describe('RequiredField Validation', () => {
     const error = sut.validate(body)
 
     expect(error).toEqual(fakeError)
+  })
+
+  test('Should return null if all validations returns null', () => {
+    const { sut } = makeSut()
+
+    const body = {
+      email: 'email@mail.com'
+    }
+
+    const error = sut.validate(body)
+
+    expect(error).toBeFalsy()
   })
 })
