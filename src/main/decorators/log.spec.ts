@@ -6,21 +6,21 @@ interface SutTypes {
   controllerStub: Controller
 }
 
-class ControllerStub implements Controller {
-  async handle (_httpRequest: HttpRequest): Promise<HttpResponse> {
-    return new Promise((resolve) => resolve({
-      statusCode: 200,
-      body: {
-        name: 'valid_name',
-        email: 'valid_email@mail.com',
-        password: 'valid_password',
-        id: 'valid_id'
-      }
-    }))
-  }
-}
-
 const makeControllerStub = (): Controller => {
+  class ControllerStub implements Controller {
+    async handle (_httpRequest: HttpRequest): Promise<HttpResponse> {
+      return new Promise((resolve) => resolve({
+        statusCode: 200,
+        body: {
+          name: 'valid_name',
+          email: 'valid_email@mail.com',
+          password: 'valid_password',
+          id: 'valid_id'
+        }
+      }))
+    }
+  }
+
   return new ControllerStub()
 }
 
@@ -47,5 +47,29 @@ describe('LogController Decorator', () => {
     await sut.handle(httpRequest)
 
     expect(handleSpy).toHaveBeenCalledWith(httpRequest)
+  })
+
+  test('Should return the same result of the controller', async () => {
+    const { sut } = makeSut()
+    const httpRequest = {
+      body: {
+        name: 'valid_name',
+        email: 'valid_email@mail.com',
+        password: 'valid_password',
+        passwordConfirmation: 'valid_password'
+      }
+    }
+
+    const httpResponse = await sut.handle(httpRequest)
+
+    expect(httpResponse).toEqual({
+      statusCode: 200,
+      body: {
+        name: 'valid_name',
+        email: 'valid_email@mail.com',
+        password: 'valid_password',
+        id: 'valid_id'
+      }
+    })
   })
 })
