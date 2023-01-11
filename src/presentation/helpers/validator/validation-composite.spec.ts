@@ -43,7 +43,7 @@ describe('RequiredField Validation', () => {
     expect(error).toEqual(fakeError)
   })
 
-  test('Should return null if all validations returns null', () => {
+  test('Should not return null if all validations succeeds', () => {
     const { sut } = makeSut()
 
     const body = {

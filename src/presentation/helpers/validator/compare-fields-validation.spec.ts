@@ -12,7 +12,7 @@ const makeSut = (): SutTypes => {
 }
 
 describe('CompareFields Validation', () => {
-  test('Should return an error if validation fails', () => {
+  test('Should return a InvalidParamError if validation fails', () => {
     const { sut } = makeSut()
 
     const body = {
@@ -25,7 +25,7 @@ describe('CompareFields Validation', () => {
     expect(error).toEqual(new InvalidParamError('passwordConfirmation'))
   })
 
-  test('Should return null if validation pass', () => {
+  test('Should not return null if validation succeeds', () => {
     const { sut } = makeSut()
 
     const body = {

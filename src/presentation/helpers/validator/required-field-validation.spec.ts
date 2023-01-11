@@ -12,7 +12,7 @@ const makeSut = (): SutTypes => {
 }
 
 describe('RequiredField Validation', () => {
-  test('Should return an error if validation fails', () => {
+  test('Should return a MissingParamError if validation fails', () => {
     const { sut } = makeSut()
 
     const body = {
@@ -24,7 +24,7 @@ describe('RequiredField Validation', () => {
     expect(error).toEqual(new MissingParamError('email'))
   })
 
-  test('Should return null if validation pass', () => {
+  test('Should not return null if validation succeeds', () => {
     const { sut } = makeSut()
 
     const body = {
