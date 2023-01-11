@@ -3,6 +3,7 @@ import { Collection, MongoClient } from 'mongodb'
 export class MongoHelper {
   private static instance: MongoHelper
   private client: MongoClient
+  private uri: string
 
   private constructor () {}
 
@@ -16,13 +17,18 @@ export class MongoHelper {
 
   async connect (uri: string): Promise<void> {
     this.client = await MongoClient.connect(uri)
+    this.uri = uri
   }
 
   async disconnect (): Promise<void> {
     await this.client.close()
+    this.client = null
   }
 
-  getCollection (name: string): Collection {
+  async getCollection (name: string): Promise<Collection> {
+    if (!this.client) {
+      await this.connect(this.uri)
+    }
     return this.client.db().collection(name)
   }
 
