@@ -1,7 +1,7 @@
 import { LoginController } from './login'
 import { EmailValidator, Authentication } from './login-protocols'
 import { InvalidParamError, MissingParamError } from '../../errors'
-import { badRequest, serverError, unauthorized } from '../../helpers/http-helper'
+import { badRequest, ok, serverError, unauthorized } from '../../helpers/http-helper'
 
 interface SutTypes {
   sut: LoginController
@@ -132,5 +132,15 @@ describe('Login Controller', () => {
     const httpResponse = await sut.handle(httpRequest)
 
     expect(httpResponse).toEqual(serverError(fakeError))
+  })
+
+  test('Should return 200 if valid credentials are provided', async () => {
+    const { sut } = makeSut()
+
+    const httpRequest = { body: { email: 'any_mail@mail.com', password: 'any_password' } }
+
+    const httpResponse = await sut.handle(httpRequest)
+
+    expect(httpResponse).toEqual(ok({ accessToken: 'access_token' }))
   })
 })
