@@ -24,4 +24,17 @@ describe('CompareFields Validation', () => {
 
     expect(error).toEqual(new InvalidParamError('passwordConfirmation'))
   })
+
+  test('Should return null if validation pass', () => {
+    const { sut } = makeSut()
+
+    const body = {
+      password: 'password',
+      passwordConfirmation: 'password'
+    }
+
+    const error = sut.validate(body)
+
+    expect(error).toBeFalsy()
+  })
 })
