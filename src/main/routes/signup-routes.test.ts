@@ -6,7 +6,7 @@ describe('SignUp Routes', () => {
   const mongoHelper = MongoHelper.getInstance()
 
   beforeAll(async () => {
-    await mongoHelper.connect(process.env.MONGO_URL as string)
+    await mongoHelper.connect(process.env.MONGO_URL)
   })
 
   afterAll(async () => {
@@ -14,7 +14,7 @@ describe('SignUp Routes', () => {
   })
 
   beforeEach(async () => {
-    const accountCollection = mongoHelper.getCollection('accounts')
+    const accountCollection = await mongoHelper.getCollection('accounts')
 
     await accountCollection.deleteMany({})
   })
